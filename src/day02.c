@@ -19,7 +19,11 @@ void bad_input()
 
 // Colors are represented by their first character
 inline char color_to_index(char c) {return (c=='b') + 2*(c=='g');}
+
+// returns the length of the name of the color
 inline char color_to_length(char c){return color_to_index(c) + 3;}
+
+// returns the maximum allowed amount of the color (part 1)
 inline char color_to_max(char c) {return color_to_index(c)+12 + (c=='b') - (c=='g');}
 
 int main(int argc, char**argv)
@@ -36,27 +40,38 @@ int main(int argc, char**argv)
     // For the sake of speed, what follows suppose the input is valid
     time_t start_point = time(NULL);
 
-    uint64_t output1 = 0;
-    uint64_t output2 = 0;
+    uint64_t output1 = 0; // output for part 1
+    uint64_t output2 = 0; // output for part 2
 
-    // for part 2
+    // stores the minimum required amount of each color (part2)
     char required[3];
 
     for (int i = 0; i < line_nb; i++)
     {
         if (input[i][0] != 'G') break; // eof
+
+        // index in the current line, starts at the first number
         int j = 8 + (i >= 9) + (i >= 99);
-        bool eol = false;
-        bool impossible = false;
-        memset(required, 0, 3);
+
+        bool eol = false; // end of line reached ?
+        bool impossible = false; // part 1
+        memset(required, 0, 3); // part 2
+
+        // loops through the pairs (number, color) until end of line
         while(!eol)
         {
+            // Query the number and goes to color 
             char* temp;
             int number = strtoll(input[i]+j, &temp, 10);
             j = temp - input[i] + 1;
+
+            // update required to store max(required, number) (part2)
             int index = color_to_index(input[i][j]);
             if (number > required[index]) required[index] = number;
-            impossible |= number > color_to_max(input[i][j]);
+
+            impossible |= number > color_to_max(input[i][j]); // part1
+
+            // Moves j to next number
             j += color_to_length(input[i][j]);
             eol |= !input[i][j];
             j += 2;
