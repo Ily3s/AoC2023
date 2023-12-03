@@ -38,7 +38,7 @@ int main(int argc, char**argv)
     fclose(input_file);
     
     // For the sake of speed, what follows suppose the input is valid
-    time_t start_point = time(NULL);
+    clock_t start_point = clock();
 
     uint64_t output1 = 0; // output for part 1
     uint64_t output2 = 0; // output for part 2
@@ -80,11 +80,11 @@ int main(int argc, char**argv)
         output2 += required[0]*required[1]*required[2];
     }
 
-    time_t end_point = time(NULL);
+    clock_t end_point = clock();
 
     printf("PART 1 output : %"PRIu64"\n", output1);
     printf("PART 2 output : %"PRIu64"\n", output2);
-    printf("Time : %lf micro-seconds\n", difftime(end_point, start_point)*1000000.0);
+    printf("Time : %lf micro-seconds\n", (double)(end_point - start_point)/CLOCKS_PER_SEC*1000000.0);
 
     return 0;
 }
