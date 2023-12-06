@@ -23,13 +23,14 @@ bool eol(char c) {return !c || c == '\n' || c == '\r';}
 struct Range
 {
     int64_t start, len;
+    bool guard;
 };
 
 struct Range* ranges;
 uint64_t capacity;
 uint64_t length;
 
-void pushback(int64_t start, int64_t len)
+void pushback(int64_t start, int64_t len, bool guard)
 {
     if (capacity == length) {
         capacity *= 2;
@@ -37,6 +38,7 @@ void pushback(int64_t start, int64_t len)
     }
     ranges[length].start = start;
     ranges[length].len = len;
+    ranges[length].guard = guard;
     length++;
 }
 
@@ -111,7 +113,6 @@ int main(int argc, char**argv)
     ranges = malloc(2*seed_nb*sizeof(struct Range));
     capacity = 2*seed_nb;
     length = seed_nb/2;
-    uint64_t len_cpy = length;
 
     ptr = input[0]+7;
     for(int i = 0; i < seed_nb/2; i++) {
@@ -119,19 +120,19 @@ int main(int argc, char**argv)
         ranges[i].len = strtoll(ptr+1, &ptr, 10);
     }
 
-    for (int i = 2; i < line_nb; i++)
+    for (int i = 1; i < line_nb; i++)
     {
         ptr = input[i];
         if (*ptr > '9' || *ptr < '0'){
-            if (*ptr >= 'a') len_cpy = length;
+            for (int k = 0; k < length; k++) ranges[k].guard = false;
             continue;
         }
         int64_t dest = strtoll(ptr, &ptr, 10);
         int64_t src = strtoll(ptr+1, &ptr, 10);
         int64_t len = strtoll(ptr+1, &ptr, 10);
-        for (int k = 0; k < len_cpy; k++)
+        for (int k = 0; k < length; k++)
         {
-            if (ranges[k].len <= 0) continue;
+            if (ranges[k].guard || ranges[k].len <= 0) continue;
             int64_t delta = ranges[k].start - src;
 
             if (delta >= 0 && delta < len)
@@ -140,16 +141,16 @@ int main(int argc, char**argv)
                 int64_t new_len = len - delta <= ranges[k].len ? len - delta : ranges[k].len;
                 ranges[k].start += new_len;
                 ranges[k].len -= new_len;
-                pushback(new_start, new_len);
+                pushback(new_start, new_len, true);
             }
 
             if (delta < 0 && -delta < ranges[k].len)
             {
                 if (src + len < ranges[k].start + ranges[k].len) {
-                    pushback(dest, len);
-                    pushback(src + len, ranges[k].len + delta - len);
+                    pushback(dest, len, true);
+                    pushback(src + len, ranges[k].len + delta - len, false);
                 } else {
-                    pushback(dest, ranges[k].len + delta);
+                    pushback(dest, ranges[k].len + delta, true);
                 }
                 ranges[k].len = -delta;
             }
