@@ -37,6 +37,8 @@ int main(int argc, char**argv)
 
     uint64_t output1 = 1, output2 = 0;
 
+    // Also you could just take a sheet of paper, a pen and 2 minutes of your life and work it out
+
     int races_nb = 0;
     int times[10];
     
