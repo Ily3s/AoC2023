@@ -14,7 +14,7 @@ void bad_input()
     exit(-1);
 }
 
-inline bool eol(char c) {return !c || c == '\n' || c == '\r';}
+bool eol(char c) {return !c || c == '\n' || c == '\r';}
 
 #define MAX_LINE_NUMBER 200
 #define MAX_LINE_SIZE 200
@@ -27,7 +27,7 @@ int main(int argc, char**argv)
     if(!input_file) bad_input(); // exit execution
     char input[MAX_LINE_NUMBER][MAX_LINE_SIZE];
     int line_nb = 0;
-    while(line_nb<1000 && fgets(input[line_nb], 200, input_file)) line_nb++;
+    while(line_nb<1000 && fgets(input[line_nb], MAX_LINE_SIZE, input_file)) line_nb++;
     fclose(input_file);
     
     // For the sake of speed, what follows suppose the input is valid

@@ -34,7 +34,7 @@ int main(int argc, char**argv)
     if(!input_file) bad_input(); // exit execution
     char input[MAX_LINE_NUMBER][MAX_LINE_SIZE];
     int line_nb = 0;
-    while(line_nb<1000 && fgets(input[line_nb], 200, input_file)) line_nb++;
+    while(line_nb<1000 && fgets(input[line_nb], MAX_LINE_SIZE, input_file)) line_nb++;
     fclose(input_file);
     
     // For the sake of speed, what follows suppose the input is valid
