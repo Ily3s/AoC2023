@@ -72,8 +72,14 @@ int main(int argc, char**argv)
         }
     }
 
+    int current = 0; // AAA
+    for (int j = 0; current != 26*26*26-1; j++) {
+        output1++;
+        if (eol(input[0][j])) j = 0;
+        current = nodes[current].l * (input[0][j] == 'L') + nodes[current].r * (input[0][j] == 'R');
+    }
+
     for (int i = 0; i < entries_nb; i++) {
-        bool is_AAA = entries[i] == 0;
         int current = entries[i];
         entries[i] = 0;
         for (int j = 0; !nodes[current].is_exit ; j++) {
@@ -81,7 +87,6 @@ int main(int argc, char**argv)
             if (eol(input[0][j])) j = 0;
             current = nodes[current].l * (input[0][j] == 'L') + nodes[current].r * (input[0][j] == 'R');
         }
-        if (is_AAA) output1 = entries[i];
     }
 
     output2 = entries[0];
